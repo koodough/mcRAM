@@ -20,8 +20,8 @@ WORLD="/home/minecraft/world_storage"
 WORLD_DIRNAME="`dirname $WORLD`"
 
 #Path to your minecraft server
-SERVER="/home/minecraft/craftbukkit-0.0.1-SNAPSHOT.jar"
-#SERVER="/home/minecraft/minecraft_server.jar"
+#SERVER="/home/minecraft/craftbukkit-0.0.1-SNAPSHOT.jar"
+SERVER="/home/minecraft/minecraft_server.jar"
 
 #You must know what your doing with your changing this path. Your on your own on this on.
 WORLD_IN_RAM="/dev/shm/minecraft/World_in_RAM"
@@ -55,12 +55,11 @@ cp -aR $WORLD/* $WORLD_IN_RAM/
 echo "Entering directory $WORLD_DIRNAME ..."
 cd $WORLD_DIRNAME
 
-echo 'Linking RAM world to default location...'
-ln -s $WORLD_IN_RAM $VOLATILE
+echo 'Linking RAM world to location as defined in server.properties, which should be '"\"`basename $VOLATILE`\""
+ln -s $WORLD_IN_RAM $VOLATILE 
 
 echo 'Starting minecraft...'
 sleep 3
 cd `dirname $0`
-screen -dmS Minecraft `java -server -Xms512M -Xmx768M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$VOLATILE" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
+screen -dmS Minecraft `java -server -Xms512M -Xmx768M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$WORLD_IN_RAM/" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
 renice -n -10 -p `ps -e | grep java | awk '{ print $1 }'` #Reniceing helps the soul, just like a bowl of chicken soup.
-
