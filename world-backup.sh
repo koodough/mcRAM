@@ -11,7 +11,14 @@ WORLD_DIRNAME="`dirname $WORLD`"
 
 #VOLATILE is the path the World symlink is going to be located linked to the 
 #NOTE: Make sure your server.properties is pointing to the World_in_RAM
-VOLATILE="$WORLD_DIRNAME/World_in_RAM"
+#VOLATILE="$WORLD_DIRNAME/World_in_RAM"
+VOLATILE="/dev/shm/minecraft/World_in_RAM/"
+#
+# WHY DID I CHANGE THIS?!
+# Because according to the rsync manual, when it's source dir is pointed
+# at a symlink instead of an actual dir, it copies the symlink as well.
+# This caused a recursive link to be copied to both physical and volatile
+# locations. The new change avoid this.
 
 SCREEN_NAME="Minecraft"
 

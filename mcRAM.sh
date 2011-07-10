@@ -20,8 +20,8 @@ WORLD="/home/minecraft/world_storage"
 WORLD_DIRNAME="`dirname $WORLD`"
 
 #Path to your minecraft server
-#SERVER="/home/minecraft/craftbukkit-0.0.1-SNAPSHOT.jar"
-SERVER="/home/minecraft/minecraft_server.jar"
+SERVER="/home/minecraft/craftbukkit-0.0.1-SNAPSHOT.jar"
+#SERVER="/home/minecraft/minecraft_server.jar"
 
 #You must know what your doing with your changing this path. Your on your own on this on.
 WORLD_IN_RAM="/dev/shm/minecraft/World_in_RAM"
@@ -39,11 +39,11 @@ rm $WORLD/session.lock $WORLD_DIRNAME/server.log.lck > /dev/null
 
 echo 'Removing old symlinks...'
 # We're not using 'rm -r' in case World_in_RAM ends up being the actual world folder instead of a symlink, but not that likely.
-rm $VOLATILE > /dev/null
+rm $VOLATILE 2>&1 > /dev/null
 
 #Clean anything World that was left on the RAM
 echo 'Cleaning volatile memory...'
-rm -rf $WORLD_IN_RAM > /dev/null
+rm -rf $WORLD_IN_RAM 2>&1 > /dev/null
 
 #Setup folder in RAM for the world to be loaded
 echo 'Building RAM directory tree...'
@@ -62,4 +62,5 @@ echo 'Starting minecraft...'
 sleep 3
 cd `dirname $0`
 screen -dmS Minecraft `java -server -Xms512M -Xmx768M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$WORLD_IN_RAM/" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
-renice -n -10 -p `ps -e | grep java | awk '{ print $1 }'` #Reniceing helps the soul, just like a bowl of chicken soup.
+#Reniceing helps the soul, just like a bowl of chicken soup.
+renice -n -10 -p `ps -e | grep java | awk '{ print $1 }'` 
