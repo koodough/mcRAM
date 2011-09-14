@@ -15,13 +15,16 @@
 # Change WORLD, SERVER, and maybe WORLD_IN_RAM to the correct locations
 #To see the console of the minecraft server type "screen -xRRA" in terminal
 
+#NO TOUCHY, use the variable if the world is in the same directory as this script
+directory_name="$( cd "$( dirname "$0" )" && pwd )"
+
 #Path to your world folder
-WORLD="/home/minecraft/world_storage"
+WORLD="$directory_name/world_storage"
 WORLD_DIRNAME="`dirname $WORLD`"
 
 #Path to your minecraft server
-SERVER="/home/minecraft/craftbukkit-0.0.1-SNAPSHOT.jar"
-#SERVER="/home/minecraft/minecraft_server.jar"
+SERVER="$directory_name/craftbukkit-0.0.1-SNAPSHOT.jar"
+#SERVER="$directory_name/minecraft_server.jar"
 
 #You must know what your doing with your changing this path. Your on your own on this on.
 WORLD_IN_RAM="/dev/shm/minecraft/World_in_RAM"
@@ -46,10 +49,10 @@ echo 'Cleaning volatile memory...'
 rm -rf $WORLD_IN_RAM 2>&1 > /dev/null
 
 #Setup folder in RAM for the world to be loaded
-echo 'Building RAM directory tree...'
+echo 'Building $WORLD_IN_RAM directory tree...'
 mkdir -p $WORLD_IN_RAM
 
-echo 'Copying world_storage backup to RAM...'
+echo 'Copying $WORLD backup to $WORLD_IN_RAM ...'
 cp -aR $WORLD/* $WORLD_IN_RAM/
 
 echo "Entering directory $WORLD_DIRNAME ..."
@@ -58,7 +61,7 @@ cd $WORLD_DIRNAME
 echo 'Linking RAM world to location as defined in server.properties, which should be '"\"`basename $VOLATILE`\""
 ln -s $WORLD_IN_RAM $VOLATILE 
 
-echo 'Starting minecraft...'
+echo 'Starting minecraft world $WORLD...'
 sleep 3
 cd `dirname $0`
 screen -dmS Minecraft `java -server -Xms512M -Xmx768M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$WORLD_IN_RAM/" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
