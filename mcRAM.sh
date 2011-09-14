@@ -49,19 +49,19 @@ echo 'Cleaning volatile memory...'
 rm -rf $WORLD_IN_RAM 2>&1 > /dev/null
 
 #Setup folder in RAM for the world to be loaded
-echo 'Building $WORLD_IN_RAM directory tree...'
+echo "Building $WORLD_IN_RAM directory tree..."
 mkdir -p $WORLD_IN_RAM
 
-echo 'Copying $WORLD backup to $WORLD_IN_RAM ...'
+echo "Copying $WORLD backup to $WORLD_IN_RAM ..."
 cp -aR $WORLD/* $WORLD_IN_RAM/
 
 echo "Entering directory $WORLD_DIRNAME ..."
 cd $WORLD_DIRNAME
 
-echo 'Linking RAM world to location as defined in server.properties, which should be '"\"`basename $VOLATILE`\""
+echo "Linking $WORLD_IN_RAM to location as defined in server.properties, which should be `basename $VOLATILE`"
 ln -s $WORLD_IN_RAM $VOLATILE 
 
-echo 'Starting minecraft world $WORLD...'
+echo "Starting minecraft world $WORLD..."
 sleep 3
 cd `dirname $0`
 screen -dmS Minecraft `java -server -Xms512M -Xmx768M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$WORLD_IN_RAM/" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
