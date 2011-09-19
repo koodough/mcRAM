@@ -15,6 +15,11 @@
 # Change WORLD, SERVER, and maybe WORLD_IN_RAM to the correct locations
 #To see the console of the minecraft server type "screen -xRRA" in terminal
 
+#TODO
+# set the amount of RAM the server can use - min and max
+# Better debug and cleaner code
+
+
 #NO TOUCHY, use the variable if the world is in the same directory as this script
 directory_name="$( cd "$( dirname "$0" )" && pwd )"
 
