@@ -18,6 +18,18 @@
 #NO TOUCHY, use the variable if the world is in the same directory as this script
 directory_name="$( cd "$( dirname "$0" )" && pwd )"
 
+#Check to see if the level-name in server.properties is set correctly
+level_name="cat $directory_name/server.properties | grep level-name"
+level_name=${level_name:11}
+
+#Check to see if the server is set to World_in_RAM
+if[[ $level_name != "World_in_RAM" ]]; then 
+	echo "Please set level-name to World_in_RAM. Copy This (no spaces) level-name=World_in_RAM"
+	exit 1
+fi
+
+#NO TOUCHY end
+
 #Path to your world folder
 WORLD="$directory_name/world_storage"
 WORLD_DIRNAME="`dirname $WORLD`"
