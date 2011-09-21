@@ -81,6 +81,6 @@ ln -s $WORLD_IN_RAM $VOLATILE
 echo "Starting minecraft world $WORLD..."
 sleep 3
 cd `dirname $0`
-screen -dmS Minecraft `java -server -Xms512M -Xmx768M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$WORLD_IN_RAM/" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
+screen -dmS Minecraft `java -server -Xmx1024M -Xms1024M -Djava.net.preferIPv4Stack=true -jar $SERVER nogui`  && rsync -ravu --delete --force "$WORLD_IN_RAM/" "$WORLD" && screen -p Minecraft -X stuff "$(printf "say RAM sync complete.\r")"
 #Reniceing helps the soul, just like a bowl of chicken soup.
 renice -n -10 -p `ps -e | grep java | awk '{ print $1 }'` 
